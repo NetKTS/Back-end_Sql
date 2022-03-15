@@ -4,10 +4,10 @@ exports.findAll = (req, res) => {
     const title = req.query.title;
     tutorialModel.getAll(title, (err, data) => {
         if (err)
-        res.status(500).send({
-            message:
-            err.message || "Some error occurred while retrieving tutorials."
-        });
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving tutorials."
+            });
         else res.send(data);
     });
 };
@@ -21,48 +21,99 @@ exports.create = (req, res) => {
     }
     // สร้างเรคอร์ดหนังสือใหม่ อ่านค่าจาก request มาใส่ทีละฟิลด์
     const tutorial = new tutorialModel({
-    title: req.body.title,
-    description: req.body.description,
-    published: req.body.published || false
+        title: req.body.title,
+        description: req.body.description,
+        published: req.body.published || false
     });
     // บันทึกลง database ด้วยการเรียก method create ที่เราเขียนไว้ใน models
     tutorialModel.create(tutorial, (err, data) => {
-    if (err)
-        res.status(500).send({
-        message:
-        err.message || "Some error occurred while creating the Tutorial."
-    });
-    else res.send(data);
+        if (err)
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while creating the Tutorial."
+            });
+        else res.send(data);
     });
 };
-exports.findById = (req,res) =>{
-    tutorialModel.findById(req.params.id,(err,data) => {
-        if(err){
-            res.status(500).send({message:"err: ",err})
+exports.findById = (req, res) => {
+    tutorialModel.findById(req.params.id, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: "err: ", err })
         }
         else res.send(data)
     })
 }
-exports.delete = (req,res) =>{
-    tutorialModel.remove(req.params.id,(err,data) => {
-        if(err){
-            res.status(500).send({message: err})
+exports.delete = (req, res) => {
+    tutorialModel.remove(req.params.id, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err })
         }
         else res.send(data)
     })
 }
-exports.updateById = (req,res) =>{
+exports.updateById = (req, res) => {
     const newTutorial = {
         id: req.params.id
     }
-    req.body.title != null ? newTutorial.title = req.body.title: "";
-    req.body.description != null ? newTutorial.description = req.body.description: "";
-    req.body.published != null ? newTutorial.published = req.body.published: "";
+    req.body.title != null ? newTutorial.title = req.body.title : "";
+    req.body.description != null ? newTutorial.description = req.body.description : "";
+    req.body.published != null ? newTutorial.published = req.body.published : "";
 
-    tutorialModel.update(newTutorial,(err,data) =>{
-        if(err){
-            res.status(500).send({message: "err:",err})
+    tutorialModel.update(newTutorial, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: "err:", err })
         }
         else res.send(data)
     })
+}
+exports.findByTitle = (req, res) => {
+    var keyword = req.params.keyword
+    console.log("findByTitle")
+    tutorialModel.getAll("", (err, data) => {
+        if (err)
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving tutorials."
+            });
+        else {
+            if (!keyword) {
+                res.send(data);
+            } else {
+                var resultdata = [];
+                data.forEach(element => {
+                    if (element.title.toLowerCase().includes(keyword.toLowerCase())) {
+                        resultdata.push(element)
+                    }
+                });
+                res.send(resultdata);
+            }
+
+        }
+    });
+}
+
+exports.published = (req, res) => {
+    console.log("data")
+    tutorialModel.getAll("", (err, data) => {
+        if (err){
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving tutorials."
+            });
+        }
+            
+        else {
+            console.log("data")
+            console.log(data)
+            var resultdata = [];
+            data.forEach(element => {
+                console.log("element")
+                console.log(element)
+                if (element.published) {
+                    resultdata.push(element)
+                }
+            });
+            res.send(resultdata);
+        }
+    });
 }

@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const tutorialRouter = require("./app/routes/tutorial.routers")
 var corsOptions={
-    orgin:"http://localhost:8082"
+    orgin:"http://localhost:3000"
 };
 app.use(cors(corsOptions));
 
@@ -18,7 +18,7 @@ app.get("/",(req,res) =>{
 
 app.use("/api/tutorial",tutorialRouter)
 
-const PORT = 8083;
+const PORT = 3000;
 app.listen(PORT,()=>{
     console.log(`Server is running !!! on port:${PORT}`)
 });
